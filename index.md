@@ -3,7 +3,7 @@ layout: lesson
 root: .
 ---
 
-*an introduction to R for non-programmers using gapminder data*
+*an introduction to how R works with repetitive tasks*
 
 The goal of this lesson is to teach novice programmers to write modular code
 and best practices for using R for data analysis. R is commonly used in many
@@ -13,11 +13,6 @@ use R and want to learn more. The emphasis of these materials is to give
 attendees a strong foundation in the fundamentals of R, and to teach best
 practices for scientific computing: breaking down analyses into modular units,
 task automation, and encapsulation.
-
-Note that this workshop will focus on teaching the fundamentals of the
-programming language R, and will not teach statistical analysis.
-
-The lesson contains more material than can be taught in a day.  The [instructor notes page]({{ page.root }}/guide) has some suggested lesson plans suitable for a one or half day workshop.
 
 A variety of third party packages are used throughout this workshop. These
 are not necessarily the best, nor are they comprehensive, but they are
@@ -29,4 +24,5 @@ usability.
 > Understand that computers store data and instructions (programs, scripts etc.) in files.
 > Files are organised in directories (folders).
 > Know how to access files not in the working directory by specifying the path.
+
 {: .prereq}
