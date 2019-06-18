@@ -4,7 +4,7 @@ title: Setup
 root: .
 ---
 
-This lesson assumes you have the R, RStudio software installed on your computer.
+This workshop assumes you have R and RStudio software already installed on your computer.
 
 R can be downloaded [here](https://cran.r-project.org/mirrors.html).
 
