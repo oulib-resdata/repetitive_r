@@ -3,21 +3,21 @@ layout: lesson
 root: .
 ---
 
-*an introduction to how R works with repetitive tasks*
+*Repetitive Tasks in R*
 
-The goal of this lesson is to teach novice programmers to write modular code
-and best practices for using R for data analysis. R is commonly used in many
-scientific disciplines for statistical analysis and its array of third-party
-packages. We find that many scientists who come to Software Carpentry workshops
-use R and want to learn more. The emphasis of these materials is to give
-attendees a strong foundation in the fundamentals of R, and to teach best
-practices for scientific computing: breaking down analyses into modular units,
-task automation, and encapsulation.
+This workshop is an active learning "code-along" overview of how to automate repetitive tasks while programming in R. This is an expansion and extension of the R function and loop materials presented in Software Carpentry [https://swcarpentry.github.io/r-novice-gapminder/].
 
-A variety of third party packages are used throughout this workshop. These
-are not necessarily the best, nor are they comprehensive, but they are
-packages we find useful, and have been chosen primarily for their
-usability.
+After this workshop, you should know when and how to
+
+- use loops to automate tasks
+- use vectorized base or package functions to automate tasks
+- write your own functions to automate tasks
+
+Please bring a computer with R (required) and RStudio (suggested) installed. Prior experience coding in R is required. I.e., most of the code in chapters 1-6 in Software Carpentry with R [https://swcarpentry.github.io/r-novice-gapminder/] should be familiar to you. Complete novices to R should attend Data or Software Carpentry instead [libraries.ou.edu/carpentries].
+
+This is an intermediate-level workshop for researchers presented by University Libraries [libraries.ou.edu] to improve research efficiency with new tools and workflows.
+
+
 
 > ## Prerequisites
 >
