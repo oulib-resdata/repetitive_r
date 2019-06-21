@@ -5,7 +5,7 @@ root: .
 
 *Repetitive Tasks in R*
 
-This workshop is an active learning "code-along" overview of how to automate repetitive tasks while programming in R. This is an expansion and extension of the R function and loop materials presented in Software Carpentry [https://swcarpentry.github.io/r-novice-gapminder/].
+This workshop is an active learning "code-along" overview of how to automate repetitive tasks while programming in R. This is adapted from materials presented in Software Carpentry [https://swcarpentry.github.io/r-novice-gapminder/].
 
 After this workshop, you should know when and how to
 
