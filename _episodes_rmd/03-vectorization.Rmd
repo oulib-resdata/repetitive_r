@@ -6,6 +6,7 @@ questions:
 - "How can I operate on all the elements of a vector at once?"
 objectives:
 - "To understand vectorized operations in R."
+- "To use lapply() (and learn about related functions) to apply to multiple elements at once"
 keypoints:
 - "Use vectorized operations instead of loops."
 source: Rmd
@@ -149,5 +150,16 @@ m * -1
 >
 > For more on matrix algebra, see the [Quick-R reference
 > guide](http://www.statmethods.net/advstats/matrix.html)
+{: .callout}
+
+the lapply function
+Use the figure from here: https://adv-r.hadley.nz/functionals.html#map
+
+> ## Tip: map() in 'purrr' package.
+>
+> "The base equivalent to map() is lapply(). The only difference is that 
+> lapply() does not support the helpers that you'll learn about below, so if 
+> you're only using map() from purrr, you can skip the additional dependency 
+> and use lapply() directly." - wickham book
 {: .callout}
 
