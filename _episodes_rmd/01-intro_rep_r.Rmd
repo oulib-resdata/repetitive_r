@@ -1,0 +1,37 @@
+---
+title: "Introduction to repetitive tasks in R"
+teaching: 10
+exercises: 0
+questions:
+- "How do I repeat an action in R?"
+- "When should I use loops or functions in R?"
+objectives:
+- use loops to automate tasks
+- use vectorized base or package functions to repeat tasks
+- write your own functions to automate tasks
+keypoints:
+- "Recognize R's vectorized nature."
+- "Understand you can do the same action in more than one way."
+source: Rmd
+---
+```{r, include=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("07-")
+# Silently load in the data so the rest of the lesson works
+gapminder <- read.csv("data/gapminder_data.csv", header=TRUE)
+# Silently set seed for random number generation, so we don't have to explain it
+set.seed(10)
+```
+
+## When would I need to perform repetitive tasks?
+Loading multiple data files, repeating an operation (for example descriptive statistics) in different groups or by different conditions, or generating a sequence.
+
+## What are the different ways you can repeat tasks in R?
+Loops, elseif, vectorized, functions.
+
+## When should you use each case?
+Elseif sorts - do something if a case is met.
+Loops go through many items.  R is vectorized which means most looping, such as going through rows of a database, can be performed by applying a function to a column by itself with no further work.
+Functions - writing your own function can help with complex loops.
+Loops and vectorized operations are similar at small-moderate sized datasets, but in larger datasets vectorizations should be faster.  Sequences require a loop.  Otherwise, you can use lapply, tapply, or sapply.
+https://rpubs.com/markpayne/132503
