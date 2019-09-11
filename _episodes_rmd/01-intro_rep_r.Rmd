@@ -36,3 +36,6 @@ lapply() and its related functions (tapply(), sapply()) let you apply functions 
 Functions - writing your own function can help with complex loops.
 Loops and vectorized operations are similar at small-moderate sized datasets, but in larger datasets vectorizations should be faster.  Sequences require a loop.  Otherwise, you can use lapply, tapply, or sapply.
 https://rpubs.com/markpayne/132503
+
+## Where can I get more help?
+The content in this workshop was adapted from the Software Carpentry lessons and from Hadley Wickham's open licensed book Advanced R.
