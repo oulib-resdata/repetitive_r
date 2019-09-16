@@ -28,14 +28,11 @@ Loading multiple data files, repeating an operation (for example descriptive sta
 Loops, vectorized (lapply and friends), functions.
 
 ## When should you use each case?
-Loops are useful for modifying an object repeatedly in place, recursive functions, and while loops (http://adv-r.had.co.nz/Functionals.html#functionals-not)
+Loops are useful for modifying an object repeatedly in place, recursive functions, and running until a condition is met [while loops](http://adv-r.had.co.nz/Functionals.html#functionals-not)
 
-R is vectorized which means most looping, such as going through rows of a database, can be performed by applying a function to a column by itself with no further work.
-lapply() and its related functions (tapply(), sapply()) let you apply functions in groups.
+However, R is vectorized which means most looping, such as going through rows of a database, can be performed by applying a function to a column by itself with no further work.  lapply() and its related functions (tapply(), sapply()) let you apply functions in groups.
 
-Functions - writing your own function can help with complex loops.
-Loops and vectorized operations are similar at small-moderate sized datasets, but in larger datasets vectorizations should be faster.  Sequences require a loop.  Otherwise, you can use lapply, tapply, or sapply.
-https://rpubs.com/markpayne/132503
+Writing your own function can help with complex loops or be used in lapply().  Loops and vectorized operations are similar at small-moderate sized datasets, but in larger datasets vectorizations should be faster.  Sequences require a loop.  Otherwise, you can use [lapply, tapply, or sapply](https://rpubs.com/markpayne/132503)
 
-## Where can I get more help?
-The content in this workshop was adapted from the Software Carpentry lessons and from Hadley Wickham's open licensed book Advanced R.
+## Where can I find more code and examples like you have in this workshop?
+The content in this workshop was adapted from the Software Carpentry lessons for [gapminder](https://swcarpentry.github.io/r-novice-gapminder/) and [inflammation datasets](http://swcarpentry.github.io/r-novice-inflammation/) and from Hadley Wickham's open licensed book [Advanced R](http://adv-r.had.co.nz).
