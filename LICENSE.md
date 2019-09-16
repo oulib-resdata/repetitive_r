@@ -3,6 +3,12 @@ layout: page
 title: "Licenses"
 root: .
 ---
+## Modifications
+This material was adapted and modified from 
+[The Carpentries](carpentries.org)
+and from Hadley Wickham's open licensed book [Advanced R](http://adv-r.had.co.nz)
+by [Claire M. Curry](mailto:cmcurry@ou.edu) at [University of Oklahoma Libraries](libraries.ou.edu).
+
 ## Instructional Material
 
 All Software Carpentry, Data Carpentry, and Library Carpentry instructional material is
