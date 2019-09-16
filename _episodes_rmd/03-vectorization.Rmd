@@ -1,21 +1,18 @@
 ---
-title: Vectorization
-teaching: 10
-exercises: 15
-questions:
-- "How can I operate on all the elements of a vector at once?"
+title: "Vectorization"
+keypoints: Use vectorized operations instead of loops.
 objectives:
-- "To understand vectorized operations in R."
-- "To use lapply() (and learn about related functions) to apply to multiple elements at once"
-keypoints:
-- "Use vectorized operations instead of loops."
+- To understand the vectorized nature of R.
+- To use lapply() to apply a function to multiple elements in an object
+output: pdf_document
+questions: How can I operate on all the elements of a vector at once?
 source: Rmd
+teaching: 20
+exercises: 15
 ---
 
 ```{r, include=FALSE}
-# Silently load in the data so the rest of the lesson works
-gapminder <- read.csv("data/gapminder_data.csv", header=TRUE)
-library("ggplot2")
+
 ```
 
 Most of R's functions are vectorized, meaning that the function will
@@ -51,54 +48,20 @@ y:  6  7  8  9
 
 > ## Challenge 1
 >
-> Let's try this on the `pop` column of the `gapminder` dataset.
+> Let's try this on the `mpg` column of the `mtcars` dataset.
 >
-> Make a new column in the `gapminder` data frame that
-> contains population in units of millions of people.
+> Make a new column in the `mtcars` data frame that
+> is in units of kilometers per liter instead of miles per gallon.
 > Check the head or tail of the data frame to make sure
 > it worked.
 >
 > > ## Solution to challenge 1
-> >
-> > Let's try this on the `pop` column of the `gapminder` dataset.
-> >
-> > Make a new column in the `gapminder` data frame that
-> > contains population in units of millions of people.
-> > Check the head or tail of the data frame to make sure
-> > it worked.
-> >
 > > ```{r}
-> > gapminder$pop_millions <- gapminder$pop / 1e6
-> > head(gapminder)
+> > mtcars$kpl <- mtcars$mpg * 0.43
+> > head(mtcars)
 > > ```
 > {: .solution}
 {: .challenge}
-
-
-> ## Challenge 2
->
-> On a single graph, plot population, in
-> millions, against year, for all countries. Don't worry about
->identifying which country is which.
->
-> Repeat the exercise, graphing only for China, India, and
->Indonesia. Again, don't worry about which is which.
->
-> > ## Solution to challenge 2
-> >
-> > Refresh your plotting skills by plotting population in millions against year.
-> >
-> > ```{r ch2-sol}
-> > ggplot(gapminder, aes(x = year, y = pop_millions)) +
-> >  geom_point()
-> > countryset <- c("China","India","Indonesia")
-> > ggplot(gapminder[gapminder$country %in% countryset,],
-> >        aes(x = year, y = pop_millions)) +
-> >   geom_point()
-> > ```
-> {: .solution}
-{: .challenge}
-
 
 Comparison operators, logical operators, and many functions are also
 vectorized:
@@ -130,34 +93,43 @@ x <- 1:4
 log(x)
 ```
 
-Vectorized operations work element-wise on matrices:
 
+
+** The lapply function **
+lapply() takes a function, applies it to each element in a list, and returns the results in the form of a list.
+If you've taken Software Carpentry with R, you may recall that a data frame is actually a special case of a list where all the list items are vectors of the same length.  
+
+** What class is each column? **
 ```{r}
-m <- matrix(1:12, nrow=3, ncol=4)
-m * -1
+unlist(lapply(mtcars, class))
+```
+
+** Divide each column by the mean **
+```{r}
+mtcars[] <- lapply(mtcars, function(x) x / mean(x))
 ```
 
 
-> ## Tip: element-wise vs. matrix multiplication
+> ## Challenge 2
 >
-> Very important: the operator `*` gives you element-wise multiplication!
-> To do matrix multiplication, we need to use the `%*%` operator:
->
-> ```{r}
-> m %*% matrix(1, nrow=4, ncol=1)
-> matrix(1:4, nrow=1) %*% matrix(1:4, ncol=1)
-> ```
->
-> For more on matrix algebra, see the [Quick-R reference
-> guide](http://www.statmethods.net/advstats/matrix.html)
-{: .callout}
+> Duplicate the code above (to divide each column by the mean) using a `for` loop.
 
-the lapply function
-Use the figure from here: https://adv-r.hadley.nz/functionals.html#map
+> > ## Solution to challenge 2
+> >
+```{r}
+for(i in 1:length(mtcars)){
+  mtcars[[i]]/mean(unlist(mtcars))
+}
+```
+> {: .solution}
+{: .challenge}
+
+The functions map() and lapply() work to take input (elements of a list, such as columns of a dataframe, apply a function f() to them, and provide output back [a list, in the case of lapply()].
+![Wickham book map figure https://adv-r.hadley.nz/functionals.html#map](https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png)
 
 > ## Tip: map() in 'purrr' package.
 >
-> "The base equivalent to map() is lapply(). The only difference is that 
+> "The tidyverse equivalent to lapply() is map(). The only difference is that 
 > lapply() does not support the helpers that you'll learn about below, so if 
 > you're only using map() from purrr, you can skip the additional dependency 
 > and use lapply() directly." - wickham book
