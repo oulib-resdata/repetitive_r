@@ -4,7 +4,9 @@ keypoints: Use vectorized operations instead of loops.
 objectives:
 - To understand the vectorized nature of R.
 - To use lapply() to apply a function to multiple elements in an object
-output: pdf_document
+output:
+  word_document: default
+  pdf_document: default
 questions: How can I operate on all the elements of a vector at once?
 source: Rmd
 teaching: 20
@@ -60,8 +62,7 @@ y:  6  7  8  9
 > > mtcars$kpl <- mtcars$mpg * 0.43
 > > head(mtcars)
 > > ```
-> {: .solution}
-{: .challenge}
+
 
 Comparison operators, logical operators, and many functions are also
 vectorized:
@@ -83,7 +84,7 @@ a
 >
 > `any()` will return `TRUE` if *any* element of a vector is `TRUE`.  
 > `all()` will return `TRUE` if *all* elements of a vector are `TRUE`.
-{: .callout}
+
 
 Most functions also operate element-wise on vectors:
 
@@ -121,8 +122,7 @@ for(i in 1:length(mtcars)){
   mtcars[[i]]/mean(unlist(mtcars))
 }
 ```
-> {: .solution}
-{: .challenge}
+
 
 The functions map() and lapply() work to take input (elements of a list, such as columns of a dataframe, apply a function f() to them, and provide output back [a list, in the case of lapply()].
 ![Wickham book map figure https://adv-r.hadley.nz/functionals.html#map](https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png)
@@ -133,5 +133,5 @@ The functions map() and lapply() work to take input (elements of a list, such as
 > lapply() does not support the helpers that you'll learn about below, so if 
 > you're only using map() from purrr, you can skip the additional dependency 
 > and use lapply() directly." - wickham book
-{: .callout}
+
 
