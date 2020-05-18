@@ -131,7 +131,7 @@ while(z > 0.1){
 > ## Challenge 1
 >
 > Write a script that loops through the `mtcars` data by cylinder number and prints out
-> whether the mean mpg is lower or higher than 20 miles per gallon for each category of cyl (cylinders) in vehicles.
+> the mean mpg (miles per gallon) for each category of cyl (cylinders).
 >
 > > ## Solution to Challenge 1
 > >
