@@ -96,34 +96,45 @@ log(x)
 
 
 
-** The lapply function **
+**The lapply function**
 lapply() takes a function, applies it to each element in a list, and returns the results in the form of a list.
 If you've taken Software Carpentry with R, you may recall that a data frame is actually a special case of a list where all the list items are vectors of the same length.  
 
 ** What class is each column? **
 ```{r}
-unlist(lapply(mtcars, class))
+unlist(lapply(X = mtcars, FUN = class))
 ```
 
 ** Divide each column by the mean **
 ```{r}
-mtcars[] <- lapply(mtcars, function(x) x / mean(x))
+means_mtcars <- mtcars
+means_mtcars[] <- lapply(X = mtcars[2:3], 
+                   FUN = function(y) y / mean(y)) #y is an arbitrary variable used only, here, change to demo with x, z, etc.
+mtcars_lapply <- lapply(X = mtcars[,2:3],
+                   function(y) y / mean(y))  #you can also assign to a new object, by default is a list.
 ```
 
 
-> ## Challenge 2
->
-> Duplicate the code above (to divide each column by the mean) using a `for` loop.
+## Challenge 2
 
-> > ## Solution to challenge 2
-> >
-```{r}
-for(i in 1:length(mtcars)){
-  mtcars[[i]]/mean(unlist(mtcars))
+Duplicate the code above (to divide each column by the mean) using a `for` loop.
+Remember a dataframe is a specialized list; other useful functions are mean(), unlist(),  and length().
+
+## Solution to challenge 2
+``` {r}
+#how to pull a column?
+mtcars[[2]] #pulling column two (second list item)
+
+#create an empty list to store results
+mtcars_proportions <- list()
+
+for(i in 2:3){
+  mtcars_proportions[[i]] <- (mtcars[[i]]/mean(unlist(mtcars[[i]])))
 }
+#The null in [[1]] can be useful in some contexts if you have missing data, not in others.
 ```
 
-
+**`tidyverse` solutions to lapply exist but we won't cover them here.** 
 The functions map() and lapply() work to take input (elements of a list, such as columns of a dataframe, apply a function f() to them, and provide output back [a list, in the case of lapply()].
 ![Wickham book map figure https://adv-r.hadley.nz/functionals.html#map](https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png)
 

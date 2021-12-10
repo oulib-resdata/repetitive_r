@@ -49,8 +49,8 @@ once.
 
 ```{r}
 for(i in 1:5){
-  for(j in c('a', 'b', 'c', 'd', 'e')){
-    print(paste(i,j))
+  for(j in c('a', 'b', 'c')){
+    print(paste("We are on loop part", i,j))
   }
 }
 ```
@@ -60,7 +60,7 @@ Rather than printing the results, we could write the loop output to a new object
 ```{r}
 output_vector <- c()
 for(i in 1:5){
-  for(j in c('a', 'b', 'c', 'd', 'e')){
+  for(j in c('a', 'b', 'c')){
     temp_output <- paste(i, j)
     output_vector <- c(output_vector, temp_output)
   }
@@ -89,10 +89,10 @@ A better way is to define your (empty) output object before filling in the value
 For this example, it looks more involved, but is still more efficient.
 
 ```{r}
-output_matrix <- matrix(nrow=5, ncol=5)
-j_vector <- c('a', 'b', 'c', 'd', 'e')
-for(i in 1:5){
-  for(j in 1:5){
+output_matrix <- matrix(nrow=3, ncol=3)
+j_vector <- c('a', 'b', 'c')
+for(i in 1:3){
+  for(j in 1:3){
     temp_j_value <- j_vector[j]
     temp_output <- paste(i, temp_j_value)
     output_matrix[i, j] <- temp_output
@@ -133,26 +133,54 @@ while(z > 0.1){
 > Write a script that loops through the `mtcars` data by cylinder number and prints out
 > the mean mpg (miles per gallon) for each category of cyl (cylinders).
 >
-> > ## Solution to Challenge 1
-> >
-> > **Step 1**:  We want to make sure we can extract all the unique values of the cylinder vector
-> > ```{r, eval=FALSE}
-> > unique(mtcars$cyl)
-> > ```
-> >
-> > **Step 2**: We also need to loop over each of these cylinder categories and calculate the average mpg for each `subset` of data.
-> > We can do that as follows:
-> >
-> > 1. Loop over each of the unique values of 'cyl'
-> > 2. For each value of cylinder, create a temporary variable storing that subset
-> > 3. Return the calculated mean mpg to the user by printing the output:
-> >
-> > ```{r, eval=FALSE}
-> > for( iCyl in unique(mtcars$cyl) ){
-> >   tmp <- mtcars[mtcars$cyl == iCyl, ]   
-> >   cat(iCyl, mean(tmp$mpg, na.rm = TRUE), "\n")  
-> >   rm(tmp)
-> > }
-> > ```
+> Let's think about how to do this in steps.
+> 1. What are the variables (columns) we need?
+> 2. Which combination of rows and columns are we getting the mean for?
+> 3. How can we generate a mean for one group (rows containing 4 cylinders only, for example) for that column?
+> 4. Which values need to be substituted, i.e, repeated, to get all the groups?
+> 5. How do we automatically get that vector of unique values (group identifiers)?
+> 6. Then and ONLY then, write the full loop.
+
+> HINTS: Remember the subset notation dataframe[rows, columns]
+> Remember functions you may need: unique(), mean(), cat(), names()
+
+## Solution to Challenge 1
+
+**Step 1** What are the variables (columns) we need?
+```{r, eval=FALSE}
+names(mtcars)
+```
+
+**Step 2** Which combination of rows and columns are we getting the mean for?
+means of mpg for rows where cyl = 4, 6, and 8
+
+**Step 3** How can we generate a mean for one group (rows containing 4 cylinders only, for example)?
+```{r, eval=FALSE}
+mtcars[mtcars$cyl == 4, "mpg"]
+# then wrap the previous line of code in mean()
+mean(mtcars[mtcars$cyl == 4, "mpg"])
+```
+**Step 4**: Which values need to be substituted, i.e, repeated, to get all the groups?
+Per step 2, we need cylinder (mtcars$cyl) to have values of 4, 6, and 8, so replace the 4 with iCyl (an arbitrary but descriptive name).
+```{r, eval=FALSE}
+mean(mtcars[mtcars$cyl == iCyl, "mpg"])
+```
+**Step 5**: How do we automatically get that vector of unique values (group identifiers)?
+```{r, eval=FALSE}
+unique(mtcars$cyl) #cyl is the group identifier for each row
+```
+**Step 6**: Then and ONLY then, write the full loop.
+Keep in mind for each iteration (repeat) of the loop, you can overwrite a previous value.
+```{r, eval=FALSE}
+for( iCyl in unique(mtcars$cyl) ){
+#temporarily store the dataframe per group
+  tmp <- mtcars[mtcars$cyl == iCyl, "mpg"] 
+  cat(iCyl,
+      "cylinders have",
+      mean(tmp, na.rm = TRUE), 
+      "mpg",
+      sep = "\n")  
+}
+```
 
 
