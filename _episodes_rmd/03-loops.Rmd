@@ -9,8 +9,8 @@ objectives:
 output: word_document
 questions: How can I repeat operations in R?
 source: Rmd
-teaching: 45
-exercises: 20
+teaching: 30
+exercises: 30
 ---
 
 ```{r, include=FALSE}
@@ -133,7 +133,8 @@ while(z > 0.1){
 > Write a script that loops through the `mtcars` data by cylinder number and prints out
 > the mean mpg (miles per gallon) for each category of cyl (cylinders).
 >
-> Let's think about how to do this in steps.
+> Let's think about how to do this in steps.  Treat the answers to these questions as a worksheet leading up to step 6, where you put the answers together and do a little more more coding to create the final loop.
+
 > 1. What are the variables (columns) we need?
 > 2. Which combination of rows and columns are we getting the mean for?
 > 3. How can we generate a mean for one group (rows containing 4 cylinders only, for example) for that column?

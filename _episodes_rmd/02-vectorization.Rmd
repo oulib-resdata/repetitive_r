@@ -1,0 +1,130 @@
+---
+title: "Vectorization"
+keypoints: Use vectorized operations instead of loops.
+objectives:
+- To understand the vectorized nature of R.
+- To use lapply() to apply a function to multiple elements in an object
+output:
+  word_document: default
+  pdf_document: default
+questions: How can I operate on all the elements of a vector at once?
+source: Rmd
+teaching: 20
+exercises: 15
+---
+
+```{r, include=FALSE}
+
+```
+
+Most of R's functions are vectorized, meaning that the function will
+operate on all elements of a vector without needing to loop through
+and act on each element one at a time. This makes writing code more
+concise, easy to read, and less error prone.
+
+
+```{r}
+x <- 1:4
+x * 2
+```
+
+The multiplication happened to each element of the vector.
+
+We can also add two vectors together:
+
+```{r}
+y <- 6:9
+x + y
+```
+
+Each element of `x` was added to its corresponding element of `y`:
+
+```{r, eval=FALSE}
+x:  1  2  3  4
+    +  +  +  +
+y:  6  7  8  9
+---------------
+    7  9 11 13
+```
+
+
+> ## Challenge 1
+>
+> Let's try this on the `mpg` column of the `mtcars` dataset.
+>
+> Make a new column in the `mtcars` data frame that
+> is in units of kilometers per liter instead of miles per gallon.
+> Check the head or tail of the data frame to make sure
+> it worked.
+>
+> > ## Solution to challenge 1
+> > ```{r}
+> > mtcars$kpl <- mtcars$mpg * 0.43
+> > head(mtcars)
+> > ```
+
+
+Comparison operators, logical operators, and many functions are also
+vectorized:
+
+
+**Comparison operators**
+
+```{r}
+x > 2
+```
+
+**Logical operators**
+```{r}
+a <- x > 3  # or, for clarity, a <- (x > 3)
+a
+```
+
+> ## Tip: some useful functions for logical vectors
+>
+> `any()` will return `TRUE` if *any* element of a vector is `TRUE`.  
+> `all()` will return `TRUE` if *all* elements of a vector are `TRUE`.
+
+
+Most functions also operate element-wise on vectors:
+
+**Functions**
+```{r}
+x <- 1:4
+log(x)
+```
+
+
+
+**The lapply function**
+lapply() takes a function, applies it to each element in a list, and returns the results in the form of a list.
+If you've taken Software Carpentry with R, you may recall that a data frame is actually a special case of a list where all the list items are vectors of the same length.  
+
+** What is the mean of each column? **
+```{r}
+unlist(lapply(X = mtcars, FUN = mean))
+```
+
+** Divide each column by the mean **
+```{r}
+means_mtcars <- mtcars
+means_mtcars[] <- lapply(X = mtcars[2:3], 
+                   FUN = function(y) y / mean(y)) #y is an arbitrary variable used only, here, change to demo with x, z, etc.
+mtcars_lapply <- lapply(X = mtcars[,2:3],
+                   function(y) y / mean(y))  #you can also assign to a new object, by default is a list.
+```
+
+
+
+**`tidyverse` solutions to lapply exist but we won't cover them here.** 
+The functions map() and lapply() work to take input (elements of a list, such as columns of a dataframe, apply a function f() to them, and provide output back [a list, in the case of lapply()].
+![Wickham book map figure https://adv-r.hadley.nz/functionals.html#map](https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png)
+
+> ## Tip: map() in 'purrr' package.
+>
+> "The tidyverse equivalent to lapply() is map(). The only difference is that 
+> lapply() does not support the helpers that you'll learn about below, so if 
+> you're only using map() from purrr, you can skip the additional dependency 
+> and use lapply() directly." - wickham book
+
+
