@@ -247,78 +247,6 @@ fahr_to_kelvin(temp = as.factor(32))
 
 ### Testing and Documenting
 
-Once we start putting things in functions so that we can re-use them, we need to start testing that those functions are working correctly.
-To see how to do this, let's write a function to center a dataset around a
-particular midpoint:
-
-```{r}
-center <- function(data, midpoint) {
-  new_data <- (data - mean(data)) + midpoint
-}
-```
-
-We could test this on our actual data, but since we don't know what the values ought to be, it will be hard to tell if the result was correct.
-Instead, let's create a vector of 0s and then center that around 3.
-This will make it simple to see if our function is working as expected:
-
-```{r, }
-z <- c(0, 0, 0, 0)
-z
-center(z, 3)
-```
-
-That looks right, so let's try center on our real data. We'll center the mtcars data on mpg around 0:
-
-```{r}
-dat <- mtcars
-centered <- center(dat[, "mpg"], 0)
-head(centered)
-```
-
-It's hard to tell from the default output whether the result is correct, but there are a few simple tests that will reassure us:
-
-```{r}
-# original min
-min(dat[, 4])
-# original mean
-mean(dat[, 4])
-# original max
-max(dat[, 4])
-# centered min
-min(centered)
-# centered mean
-mean(centered)
-# centered max
-max(centered)
-```
-
-That seems almost right: the original mean was about `r round(mean(dat[, 4]), 2)`, so the lower bound from zero is now about `r -round(mean(dat[, 4]), 2)`.
-The mean of the centered data is `r mean(centered)`.
-We can even go further and check that the standard deviation hasn't changed:
-
-```{r}
-# original standard deviation
-sd(dat[, 4])
-# centered standard deviation
-sd(centered)
-```
-
-Those values look the same, but we probably wouldn't notice if they were different in the sixth decimal place.
-Let's do this instead:
-
-```{r}
-# difference in standard deviations before and after
-sd(dat[, 4]) - sd(centered)
-```
-
-Sometimes, a very small difference can be detected due to rounding at very low decimal places.
-R has a useful function for comparing two objects allowing for rounding errors, `all.equal`:
-
-```{r}
-all.equal(sd(dat[, 4]), sd(centered))
-```
-
-It's still possible that our function is wrong, but it seems unlikely enough that we should probably get back to doing our analysis.
 We have one more task first, though: we should write some [documentation]({{ page.root }}/reference.html#documentation) for our function to remind ourselves later what it's for and how to use it.
 
 A common way to put documentation in software is to add [comments]({{ page.root }}/reference.html#comment) like this:
@@ -338,7 +266,7 @@ center <- function(data, midpoint) {
 >
 > It's important to both test functions and document them:
 > Documentation helps you, and others, understand what the
-> purpose of your function is, and how to use it, and its
+> purpose of your function is, and how to use it, and it's
 > important to make sure that your function actually does
 > what you think.
 >
@@ -365,17 +293,6 @@ center <- function(data, midpoint) {
 
 [roxygen2]: http://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html
 [testthat]: http://r-pkgs.had.co.nz/tests.html
-
-
-## Loading functions from a separate file for cleaner code
-
-If you've been writing these functions down into a separate R script
-(a good idea!), you can load in the functions into our R session by using the
-`source()` function:
-
-```{r, eval=FALSE}
-source("functions/functions-lesson.R")
-```
 
 
 > ## Tip: Pass by value
@@ -487,6 +404,20 @@ display(c = 77)
 > complete name, then by partial matching of names, and finally by position.
 
 
+
+## Loading functions from a separate file for cleaner code
+
+If you've been writing these functions down into a separate R script
+(a good idea!), you can load in the functions into our R session by using the
+`source()` function:
+
+```{r, eval=FALSE}
+source("functions/functions-lesson.R")
+```
+
+
+
+
 > ## Tip
 >
 > R has some unique aspects that can be exploited when performing more
@@ -499,5 +430,4 @@ display(c = 77)
 [man]: http://cran.r-project.org/doc/manuals/r-release/R-lang.html#Environment-objects
 [chapter]: http://adv-r.had.co.nz/Environments.html
 [adv-r]: http://adv-r.had.co.nz/
-
 
