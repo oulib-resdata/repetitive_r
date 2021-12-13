@@ -28,8 +28,4 @@ fahrenheit_to_celsius <- function(temp){
   return(celsius)
 }
 
-
-
-
-
 print("temperature functions loaded")

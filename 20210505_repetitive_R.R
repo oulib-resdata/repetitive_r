@@ -126,5 +126,3 @@ fahr_to_kelvin()
 #subset data
 
 #calculate means
-
-#plot means
