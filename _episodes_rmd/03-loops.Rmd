@@ -29,39 +29,77 @@ i.e. the calculation at each iteration depends on the results of previous iterat
 The basic structure of a `for()` loop is:
 
 ```{r, eval=FALSE}
-for(iterator in set of values){
+for(iterator in set_of_values){
   do a thing
 }
 ```
 
+This great image shows iteration as a "monster parade". The for loop they enter has an if-else statement: if the monster is a triangle, it gets sunglasses. Otherwise, it gets a hat. The output is the parade of monsters where the same input parade of monsters shows up, now wearing either sunglasses (if triangular) or a hat (if any other shape).
+
+![Illustrated for loop where the input vector is a parade of monsters, including monsters that are circles, triangles, and squares, as described by the text. Text and image CC-BY Allison Horst ](https://pbs.twimg.com/media/FrWkidtaQAIHC-5?format=jpg&name=4096x4096)
+
+
 For example:
 
 ```{r}
-for(i in 1:3){
-  print(i)
+parade <- c("Circle", "Square", "Triangle")
+for(monster in parade){
+  print(monster)
 }
 ```
 
-The `1:10` bit creates a vector on the fly; you can iterate over any other vector as well.
-
-We can use a `for()` loop nested within another `for()` loop to iterate over two things at
-once.
+We can use a `for()` loop nested within another `for()` loop to iterate over two things at once, including the character vector represented here by j.
 
 ```{r}
-for(i in 1:3){
-  for(j in c('a', 'b', 'c')){
-    print(paste("We are on loop part", i,j))
+for(monster in parade){
+  for(letter in c('a', 'b', 'c')){
+    print(paste("Monster named",
+                monster, 
+                "is learning about the letter",
+                letter))
   }
 }
 ```
 
-Rather than printing the results, we could write the loop output to a new object.
+Rather than directly calling the characters a through c, let's use their element indexing.  This will make it easier to understand how we can use this later in matrices or data frames.
+```{r}
+(alphabet <- c('a', 'b', 'c'))
+
+for(monster in 1:3){
+  for(letter in 1:3){
+    print(paste("Monster named",
+                parade[monster], 
+                "is learning about the letter",
+                alphabet[letter]))
+  }
+}
+```
+
+Next, rather than using the current final value of the vector length (here, 3), let's use a function to find it automatically in case we change the vector later.
+```{r}
+(alphabet <- c('a', 'b', 'c'))
+
+for(monster in 1:length(parade)){
+  for(letter in 1:length(alphabet)){
+    print(paste("Monster named",
+                parade[monster], 
+                "is learning about the letter",
+                alphabet[letter]))
+  }
+}
+```
+
+Next, let's also start storing the results instead of printing them.
 
 ```{r}
-output_vector <- c()
-for(i in 1:3){
-  for(j in c('a', 'b', 'c')){
-    temp_output <- paste(i, j)
+(alphabet <- c('a', 'b', 'c'))
+(output_vector <- c())
+for(monster in 1:length(parade)){
+  for(letter in 1:length(alphabet)){
+    temp_output <- paste("Monster named",
+                         parade[monster], 
+                         "is learning about the letter",
+                         alphabet[letter])
     output_vector <- c(output_vector, temp_output)
   }
 }
@@ -81,7 +119,7 @@ it when you are iterating through a lot of values.
 > can very quickly slow to a crawl. It's much better to define
 > an empty results object before hand of the appropriate dimensions.
 > So if you know the end result will be stored in a matrix like above,
-> create an empty matrix with 5 row and 5 columns, then at each iteration
+> create an empty matrix with 3 rows and 3 columns, then at each iteration
 > store the results in the appropriate location.
 
 
@@ -90,97 +128,115 @@ For this example, it looks more involved, but is still more efficient.
 
 ```{r}
 output_matrix <- matrix(nrow=3, ncol=3)
-j_vector <- c('a', 'b', 'c')
-for(i in 1:3){
-  for(j in 1:3){
-    temp_j_value <- j_vector[j]
-    temp_output <- paste(i, temp_j_value)
-    output_matrix[i, j] <- temp_output
+(alphabet <- c('a', 'b', 'c'))
+for(monster in 1:length(parade)){
+  for(letter in 1:length(alphabet)){
+    temp_output <- paste("Monster named",
+                         parade[monster], 
+                         "is learning about the letter",
+                         alphabet[letter])
+    output_matrix[monster, letter] <- temp_output
   }
 }
-output_vector2 <- as.vector(output_matrix)
-output_vector2
+View(output_matrix)
 ```
 
-## Repeating operations until a condition is met
 
-Sometimes you will find yourself needing to repeat an operation as long as a certain condition is met. You can do this with a `while()` loop.
-
-```{r, eval=FALSE}
-while(this condition is true){
-   do a thing
-  }
-```
-
-R will interpret a condition being met as "TRUE".
-As an example, here's a while loop
-that generates random numbers from a uniform distribution (the `runif()` function)
-between 0 and 1 until it gets one that's less than 0.1.
-
-```{r}
- z <- 1
-while(z > 0.1){
-   z <- runif(1)
-   cat(z, "\n")
- }
-```
-
-`while()` loops will not always be appropriate. You have to be particularly careful that you don't end up stuck in an infinite loop because your condition is always met and hence the while statement never terminates.
 
 
 > ## Challenge 1
 >
-> Write a script that loops through the `mtcars` data by cylinder number and prints out
-> the mean mpg (miles per gallon) for each category of cyl (cylinders).
->
+> Write a script that loops through the `mtcars` data by column number and stores the mean for each column in a vector.
 > Let's think about how to do this in steps.  Treat the answers to these questions as a worksheet leading up to step 6, where you put the answers together and do a little more more coding to create the final loop.
 
-> 1. What are the variables (columns) we need?
-> 2. Which combination of rows and columns are we getting the mean for?
-> 3. How can we generate a mean for one group (rows containing 4 cylinders only, for example) for that column?
-> 4. Which values need to be substituted, i.e, repeated, to get all the groups?
-> 5. How do we automatically get that vector of unique values (group identifiers)?
-> 6. Then and ONLY then, write the full loop.
+> 1. Write comments for the steps you will need in the loop.  Identify the storage vector, the iterator, the set of column numbers, and where you will perform your action (calculation of mean and storage of mean).
+> 2. Create your 1:n (set of column numbers) by finding out what the column number is for the final column in mtcars. Use ncol (instead of length) to get that number for a data frame.
+> 3. Create the code to get a single column's mean using subset notation. dataframe[row, column].
+> 4. Replace the sample column number (here, column 1) with your iterator (here, cn)
+> 5. Add in empty vector to prepare for storing all column means.
+> 6. Store means by their column number to create a vector of means.  This lets can store all results, not just most recent overwrite of loop.
+> 7. Add a print step AFTER the loop to view the final vector.
 
 > HINTS: Remember the subset notation dataframe[rows, columns]
-> Remember functions you may need: unique(), mean(), cat(), names()
+> Remember functions you may need: ncol(), mean()
 
 ## Solution to Challenge 1
 
-**Step 1** What are the variables (columns) we need?
-```{r, eval=FALSE}
-names(mtcars)
+Step 1. Write comments for the steps you will need in the loop.  Identify the storage vector, the iterator, the set of column numbers, and where you will perform your action (calculation of mean and storage of mean).
+```{r}
+# store results in a vector before the loop
+# the loop itself
+# for (cn in set_of_column_numbers) {
+# calculate and store mean of column
+# }
+# view results
 ```
 
-**Step 2** Which combination of rows and columns are we getting the mean for?
-means of mpg for rows where cyl = 4, 6, and 8
+Step 2. What is the column number of the final column?  Take the code to get that number.  Replace "set_of_column_numbers" with the sequence of 1 through the final column number.
 
-**Step 3** How can we generate a mean for one group (rows containing 4 cylinders only, for example)?
-```{r, eval=FALSE}
-mtcars[mtcars$cyl == 4, "mpg"]
-# then wrap the previous line of code in mean()
-mean(mtcars[mtcars$cyl == 4, "mpg"])
-```
-**Step 4**: Which values need to be substituted, i.e, repeated, to get all the groups?
-Per step 2, we need cylinder (mtcars$cyl) to have values of 4, 6, and 8, so replace the 4 with iCyl (an arbitrary but descriptive name).
-```{r, eval=FALSE}
-mean(mtcars[mtcars$cyl == iCyl, "mpg"])
-```
-**Step 5**: How do we automatically get that vector of unique values (group identifiers)?
-```{r, eval=FALSE}
-unique(mtcars$cyl) #cyl is the group identifier for each row
-```
-**Step 6**: Then and ONLY then, write the full loop.
-Keep in mind for each iteration (repeat) of the loop, you can overwrite a previous value.
-```{r, eval=FALSE}
-for( iCyl in unique(mtcars$cyl) ){
-#temporarily store the dataframe per group
-  cat(iCyl,
-      "cylinders have",
-      mean(mtcars[mtcars$cyl == iCyl, "mpg"], na.rm = TRUE), 
-      "mpg",
-      sep = "\n")  
+```{r}
+ncol(mtcars)
+# store results in a vector before the loop
+# the loop itself
+for (cn in 1:ncol(mtcars)) {
+# calculate and store mean of column
 }
+# view results
 ```
 
+Step 3. Create the code to get a single column using subset notation. dataframe[row, column].
+```{r}
+# store results in a vector before the loop
+# the loop itself
+for (cn in 1:ncol(mtcars)) {
+# calculate mean and store mean of single column
+col_means <- mean(mtcars[,1])
+}
+# view results
+```
+Step 4. Replace the sample column number (column 1) with your iterator (cn)
+```{r}
+# store results in a vector before the loop
+# the loop itself
+for (cn in 1:ncol(mtcars)) {
+# calculate and store mean of column
+col_means <- mean(mtcars[,cn])
+}
+# view results
+```
 
+Step 5. Add in empty vector to prepare for storing all column means.
+```{r}
+# store results in a vector before the loop
+col_means <- c()
+# the loop itself
+for (cn in 1:ncol(mtcars)) {
+# store mean of single column
+col_means <- mean(mtcars[,cn])
+}
+# view results
+```
+Step 6. Store means by their column number to create a vector of means.  This lets can store all results, not just most recent overwrite of loop.
+```{r}
+# store results in a vector before the loop
+col_means <- c()
+# the loop itself
+for (cn in 1:ncol(mtcars)) {
+# store mean of single column
+col_means[cn] <- mean(mtcars[,cn])
+}
+# view results
+```
+
+Step 7. Add a print step AFTER the loop to view the final vector.
+```{r}
+# store results in a vector before the loop
+col_means <- c()
+# the loop itself
+for (cn in 1:ncol(mtcars)) {
+# store mean of single column
+col_means[cn] <- mean(mtcars[,cn])
+}
+# view results
+print(col_means)
+```
