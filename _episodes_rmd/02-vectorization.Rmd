@@ -98,25 +98,16 @@ log(x)
 
 **The lapply function**
 lapply() takes a function, applies it to each element in a list, and returns the results in the form of a list.
-If you've taken Software Carpentry with R, you may recall that a data frame is actually a special case of a list where all the list items are vectors of the same length.  
+If you've taken Software Carpentry with R, you may recall that a data frame is actually a special case of a list where all the list items are vectors of the same length. We'll use unlist around lapply to get the answers back in an easy to read vector format for printing.
 
 ** What is the mean of each column? **
 ```{r}
 unlist(lapply(X = mtcars, FUN = mean))
 ```
 
-** Divide each column by the mean **
-```{r}
-means_mtcars <- mtcars
-means_mtcars[] <- lapply(X = mtcars[2:3], 
-                   FUN = function(y) y / mean(y)) #y is an arbitrary variable used only, here, change to demo with x, z, etc.
-mtcars_lapply <- lapply(X = mtcars[,2:3],
-                   function(y) y / mean(y))  #you can also assign to a new object, by default is a list.
-```
 
 
-
-**`tidyverse` solutions to lapply exist but we won't cover them here.** 
+**FYI: `tidyverse` solutions to lapply exist but we won't cover them here.** 
 The functions map() and lapply() work to take input (elements of a list, such as columns of a dataframe, apply a function f() to them, and provide output back [a list, in the case of lapply()].
 ![Wickham book map figure https://adv-r.hadley.nz/functionals.html#map](https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png)
 
