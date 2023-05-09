@@ -45,30 +45,28 @@ several operations with a single command.
 > functions constitute "programming" as much as any single abstraction can. If
 > you have written a function, you are a computer programmer.
 
-
 ## Defining a function
 
 Let's open a new R script file in the `functions/` directory and call it
 functions-lesson.R.
 
-Let's define a function `fahr_to_kelvin()` that converts temperatures from
-Fahrenheit to Kelvin:
+Let's define a function `conversion()` that converts values into a new value 2.14 times the original value.
 
 ```{r}
-fahr_to_kelvin <- function(temp) {
-  kelvin <- ((temp - 32) * (5 / 9)) + 273.15
-  return(kelvin)
+conversion <- function(value) {
+  converted <- value*2.14
+  return(converted)
 }
 ```
 
-We define `fahr_to_kelvin()` by assigning it to the output of `function`. The
+We define `conversion()` by assigning it to the output of `function`. The
 list of argument names are contained within parentheses.   Next, the
 [body]({{ page.root }}/reference/#function-body) of the function--the
 statements that are executed when it runs--is contained within curly braces
 (`{}`). The statements in the body are indented by two spaces. This makes the
 code easier to read but does not affect how the code operates.
 
-It is useful to think of creating functions like writing a cookbook. First you define the "ingredients" that your function needs. In this case, we only need one ingredient to use our function: "temp". After we list our ingredients, we then say what we will do with them, in this case, we are taking our ingredient and applying a set of mathmatical operators to it. 
+It is useful to think of creating functions like writing a cookbook. First you define the "ingredients" that your function needs. In this case, we only need one ingredient to use our function: "temp". After we list our ingredients, we then say what we will do with them, in this case, we are taking our ingredient and applying a set of mathematical operators to it. 
 
 When we call the function, the values we pass to it as arguments are assigned to
 those variables so that we can use them inside the function. Inside the
@@ -83,81 +81,134 @@ whoever asked for it.
 > of the function. But for clarity, we will explicitly define the
 > return statement.
 
+## Loading functions from a separate file for cleaner code
+
+You don't have to, but we're going to write our functions into a separate R script. You can load in the functions into our R session by using the
+`source()` function:
+
+```{r, eval=FALSE}
+source("functions/functions-lesson.R")
+```
 
 
 Let's try running our function.
 Calling our own function is no different from calling any other function:
 
 ```{r}
-# freezing point of water
-fahr_to_kelvin(32)
+# one inch to 2.14 cm
+conversion(1)
 ```
 
-```{r}
-# boiling point of water
-fahr_to_kelvin(212)
-```
+
 
 > ## Challenge 1
 >
-> Write a function called `kelvin_to_celsius()` that takes a temperature in
-> Kelvin and returns that temperature in Celsius.
+> Write a function called `conversion_grams_to_kg()` that takes a mass in grams and returns the value in kilograms.
 >
-> Hint: To convert from Kelvin to Celsius you subtract 273.15
+> Hint: To convert from grams to kilograms you divide by 1000
 >
 > > ## Solution to challenge 1
 > >
-> > Write a function called `kelvin_to_celsius` that takes a temperature in Kelvin
-> > and returns that temperature in Celsius
-> >
 > > ```{r}
-> > kelvin_to_celsius <- function(temp) {
-> >  celsius <- temp - 273.15
-> >  return(celsius)
+> > conversion_grams_to_kg <- function(value) {
+> >  kg <- value/1000
+> >  return(kg)
 > > }
 > > ```
 
+You can add more than one argument (or "ingredient") to the function.  In this case, let's make the conversion factor into an argument we can specify.
+```{r}
+conversion <- function(value, conversion_factor) {
+  converted <- value*conversion_factor
+  return(converted)
+}
+```
+Test it out on two different values.
+```{r}
+# convert inches to cm
+conversion(value = 1, conversion_factor = 2.14)
+# convert grams to kilograms
+conversion(value = 1000, conversion_factor = 0.0001)
+```
 
-## Combining functions
 
-The real power of functions comes from mixing, matching and combining them
-into ever-larger chunks to get the effect we want.
+## Defining Defaults
 
-Let's define two functions that will convert temperature from Fahrenheit to
-Kelvin, and Kelvin to Celsius:
+We have passed arguments to functions in two ways: directly, as in `dim(dat)`, and by name, as in `read.csv(file = "data/inflammation-01.csv", header = FALSE)`.
+In fact, we can pass the arguments to functions without naming them:
 
 ```{r}
-fahr_to_kelvin <- function(temp) {
-  kelvin <- ((temp - 32) * (5 / 9)) + 273.15
-  return(kelvin)
-}
+dat <- round(3.14, 2)
+```
 
-kelvin_to_celsius <- function(temp) {
-  celsius <- temp - 273.15
-  return(celsius)
+However, the position of the arguments matters if they are not named.
+
+```{r, error = TRUE}
+dat <- round(2, 3.14)
+```
+
+To understand what's going on, and make our own functions easier to use, let's re-define our `conversion` function like this:
+
+```{r}
+conversion <- function(value, conversion_factor=2.14) {
+  converted <- value*conversion_factor
+  return(converted)
 }
 ```
 
-> ## Challenge 2
+The key change is that the second argument is now written `conversion_factor = 2.14` instead of just `conversion_factor`.
+If we call the function with two arguments, it works as it did before:
+
+```{r}
+conversion(value = 1, conversion_factor = 10)
+```
+
+But we can also now call `conversion()` with just one argument, in which case `conversion_factor` is automatically assigned the default value of `2.14`:
+
+```{r}
+conversion(value = 1)
+```
+
+This is handy: if we usually want a function to work one way, but occasionally need it to do something else, we can allow people to pass an argument when they need to but provide a default to make the normal case easier.
+
+The example below shows how R matches values to arguments
+
+```{r}
+display <- function(a = 1, b = 2, c = 3) {
+  result <- c(a, b, c)
+  names(result) <- c("a", "b", "c")  # This names each element of the vector
+  return(result)
+}
+
+# no arguments
+display()
+# one argument
+display(55)
+# two arguments
+display(55, 66)
+# three arguments
+display(55, 66, 77)
+```
+
+As this example shows, arguments are matched from left to right, and any that haven't been given a value explicitly get their default value.
+We can override this behavior by naming the value as we pass it in:
+
+```{r}
+# only setting the value of c
+display(c = 77)
+```
+
+> ## Matching Arguments
 >
-> Define the function to convert directly from Fahrenheit to Celsius,
-> by reusing the two functions above (or using your own functions if you
-> prefer).
+> To be precise, R has three ways that arguments supplied
+> by you are matched to the *formal arguments* of the function definition:
 >
+> 1. by complete name,
+> 2. by partial name (matching on initial *n* characters of the argument name), and
+> 3. by position.
 >
-> > ## Solution to challenge 2
-> >
-> > Define the function to convert directly from Fahrenheit to Celsius,
-> > by reusing these two functions above
-> >
-> >
-> > ```{r}
-> > fahr_to_celsius <- function(temp) {
-> >   temp_k <- fahr_to_kelvin(temp)
-> >   result <- kelvin_to_celsius(temp_k)
-> >   return(result)
-> > }
-> > ```
+> Arguments are matched in the manner outlined above in *that order*: by
+> complete name, then by partial matching of names, and finally by position.
 
 
 ## Defensive Programming
@@ -319,101 +370,7 @@ center <- function(data, midpoint) {
 
 
 
-## Defining Defaults
 
-We have passed arguments to functions in two ways: directly, as in `dim(dat)`, and by name, as in `read.csv(file = "data/inflammation-01.csv", header = FALSE)`.
-In fact, we can pass the arguments to functions without naming them:
-
-```{r}
-dat <- round(3.14, 2)
-```
-
-However, the position of the arguments matters if they are not named.
-
-```{r, error = TRUE}
-dat <- round(2, 3.14)
-```
-
-To understand what's going on, and make our own functions easier to use, let's re-define our `center` function like this:
-
-```{r}
-center <- function(data, midpoint = 0) {
-  # return a new vector containing the original data centered around the
-  # midpoint (0 by default).
-  # Example: center(c(1, 2, 3), 0) => c(-1, 0, 1)
-  new_data <- (data - mean(data)) + midpoint
-  return(new_data)
-}
-```
-
-The key change is that the second argument is now written `midpoint = 0` instead of just `midpoint`.
-If we call the function with two arguments, it works as it did before:
-
-```{r}
-test_data <- c(0, 0, 0, 0)
-center(test_data, 3)
-```
-
-But we can also now call `center()` with just one argument, in which case `midpoint` is automatically assigned the default value of `0`:
-
-```{r}
-more_data <- 5 + test_data
-more_data
-center(more_data)
-```
-
-This is handy: if we usually want a function to work one way, but occasionally need it to do something else, we can allow people to pass an argument when they need to but provide a default to make the normal case easier.
-
-The example below shows how R matches values to arguments
-
-```{r}
-display <- function(a = 1, b = 2, c = 3) {
-  result <- c(a, b, c)
-  names(result) <- c("a", "b", "c")  # This names each element of the vector
-  return(result)
-}
-
-# no arguments
-display()
-# one argument
-display(55)
-# two arguments
-display(55, 66)
-# three arguments
-display(55, 66, 77)
-```
-
-As this example shows, arguments are matched from left to right, and any that haven't been given a value explicitly get their default value.
-We can override this behavior by naming the value as we pass it in:
-
-```{r}
-# only setting the value of c
-display(c = 77)
-```
-
-> ## Matching Arguments
->
-> To be precise, R has three ways that arguments supplied
-> by you are matched to the *formal arguments* of the function definition:
->
-> 1. by complete name,
-> 2. by partial name (matching on initial *n* characters of the argument name), and
-> 3. by position.
->
-> Arguments are matched in the manner outlined above in *that order*: by
-> complete name, then by partial matching of names, and finally by position.
-
-
-
-## Loading functions from a separate file for cleaner code
-
-If you've been writing these functions down into a separate R script
-(a good idea!), you can load in the functions into our R session by using the
-`source()` function:
-
-```{r, eval=FALSE}
-source("functions/functions-lesson.R")
-```
 
 
 
