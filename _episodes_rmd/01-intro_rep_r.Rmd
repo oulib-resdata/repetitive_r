@@ -4,8 +4,8 @@ keypoints:
 - Recognize R's vectorized nature.
 - Understand you can do the same action in more than one way.
 objectives:
-- use vectorized functions to repeat tasks
-- use loops to automate tasks
+- understand vectorized functions as applied to sample data
+- use loops to repeat tasks based on row/column/element indexing
 - write your own functions to automate tasks
 output: word_document
 questions:
