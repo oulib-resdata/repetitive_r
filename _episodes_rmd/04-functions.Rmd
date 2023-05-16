@@ -3,15 +3,13 @@ title: "Functions Explained"
 keypoints:
 - Use `function` to define a new function in R.
 - Use parameters to pass values into functions.
-- Use `stopifnot()` to flexibly check function arguments in R.
 - Load functions into programs using `source()`.
+- Use `stopifnot()` to flexibly check function arguments in R.
 objectives:
 - Define a function that takes arguments.
 - Return a value from a function.
-- Check argument conditions with `stopifnot()` in functions.
-- Test a function.
 - Set default values for function arguments.
-- Explain why we should divide programs into small, single-purpose functions.
+- Check argument conditions with `stopifnot()` in functions.
 output: word_document
 questions: How can I write a new function in R?
 source: Rmd
@@ -131,11 +129,31 @@ conversion(value = 1, conversion_factor = 2.14)
 conversion(value = 1000, conversion_factor = 0.0001)
 ```
 
+> ## Tip: Pass by value
+>
+> Functions in R almost always make copies of the data to operate on
+> inside of a function body. When we modify `dat` inside the function
+> we are modifying the copy of the mtcars dataset stored in `dat`,
+> not the original variable we gave as the first argument.
+>
+> This is called "pass-by-value" and it makes writing code much safer:
+> you can always be sure that whatever changes you make within the
+> body of the function, stay inside the body of the function.
+
+
+> ## Tip: Function scope
+>
+> Another important concept is scoping: any variables (or functions!) you
+> create or modify inside the body of a function only exist for the lifetime
+> of the function's execution. When we call `center()`, the variable `dat` only exists inside the body of the function. Even if we
+> have variables of the same name in our interactive R session, they are
+> not modified in any way when executing a function.
+
 
 ## Defining Defaults
 
-We have passed arguments to functions in two ways: directly, as in `dim(dat)`, and by name, as in `read.csv(file = "data/inflammation-01.csv", header = FALSE)`.
-In fact, we can pass the arguments to functions without naming them:
+We can pass arguments to functions in two ways, directly or named.
+Here's what it looks like to pass arguments without naming them.
 
 ```{r}
 dat <- round(3.14, 2)
@@ -146,6 +164,17 @@ However, the position of the arguments matters if they are not named.
 ```{r, error = TRUE}
 dat <- round(2, 3.14)
 ```
+> ## Matching Arguments
+>
+> To be precise, R has three ways that arguments supplied
+> by you are matched to the *formal arguments* of the function definition:
+>
+> 1. by complete name,
+> 2. by partial name (matching on initial *n* characters of the argument name), and
+> 3. by position.
+>
+> Arguments are matched in the manner outlined above in *that order*: by
+> complete name, then by partial matching of names, and finally by position.
 
 To understand what's going on, and make our own functions easier to use, let's re-define our `conversion` function like this:
 
@@ -171,44 +200,6 @@ conversion(value = 1)
 
 This is handy: if we usually want a function to work one way, but occasionally need it to do something else, we can allow people to pass an argument when they need to but provide a default to make the normal case easier.
 
-The example below shows how R matches values to arguments
-
-```{r}
-display <- function(a = 1, b = 2, c = 3) {
-  result <- c(a, b, c)
-  names(result) <- c("a", "b", "c")  # This names each element of the vector
-  return(result)
-}
-
-# no arguments
-display()
-# one argument
-display(55)
-# two arguments
-display(55, 66)
-# three arguments
-display(55, 66, 77)
-```
-
-As this example shows, arguments are matched from left to right, and any that haven't been given a value explicitly get their default value.
-We can override this behavior by naming the value as we pass it in:
-
-```{r}
-# only setting the value of c
-display(c = 77)
-```
-
-> ## Matching Arguments
->
-> To be precise, R has three ways that arguments supplied
-> by you are matched to the *formal arguments* of the function definition:
->
-> 1. by complete name,
-> 2. by partial name (matching on initial *n* characters of the argument name), and
-> 3. by position.
->
-> Arguments are matched in the manner outlined above in *that order*: by
-> complete name, then by partial matching of names, and finally by position.
 
 
 ## Defensive Programming
@@ -225,93 +216,54 @@ errors originate.
 
 ### Checking conditions with `stopifnot()`
 
-Let's start by re-examining `fahr_to_kelvin()`, our function for converting
-temperatures from Fahrenheit to Kelvin. It was defined like so:
+Let's start by re-examining `conversion()`, our function for converting
+values. It was defined like so:
 
 ```{r}
-fahr_to_kelvin <- function(temp) {
-  kelvin <- ((temp - 32) * (5 / 9)) + 273.15
-  return(kelvin)
+conversion <- function(value, conversion_factor) {
+  converted <- value*conversion_factor
+  return(converted)
 }
 ```
 
-For this function to work as intended, the argument `temp` must be a `numeric`
+For this function to work as intended, the argument `value` must be a `numeric`
 value; otherwise, the mathematical procedure for converting between the two
-temperature scales will not work. Luckily R provides the convenience function
+numeric units will not work. Luckily R provides the convenience function
 `stopifnot()`. We can list as many requirements that should evaluate to `TRUE`;
 `stopifnot()` throws an error if it finds one that is `FALSE`. Listing these
 conditions also serves a secondary purpose as extra documentation for the
 function.
 
 Let's try out defensive programming with `stopifnot()` by adding assertions to
-check the input to our function `fahr_to_kelvin()`.
+check the input to our function `conversion()`.
 
-We want to assert the following: `temp` is a numeric vector. We may do that like
+We want to assert the following: `value` is a numeric vector. We may do that like
 so:
 
 ```{r}
-fahr_to_kelvin <- function(temp) {
-  stopifnot(is.numeric(temp))
-  kelvin <- ((temp - 32) * (5 / 9)) + 273.15
-  return(kelvin)
+conversion <- function(value, conversion_factor) {
+  stopifnot(as.numeric(value))
+  converted <- value*conversion_factor
+  return(converted)
 }
 ```
 
 It still works when given proper input.
 
 ```{r}
-# freezing point of water
-fahr_to_kelvin(temp = 32)
+conversion(value = 1, conversion_factor = 1000)
 ```
 
 But fails instantly if given improper input.
 
 ```{r}
-# Metric is a factor instead of numeric
-fahr_to_kelvin(temp = as.factor(32))
+# value is a character instead of numeric
+conversion(value = "one", conversion_factor = 1000)
+conversion(value = "1", conversion_factor = 1000)
 ```
-
-> ## Challenge 3
->
-> Use defensive programming to ensure that our `fahr_to_celsius()` function
-> throws an error immediately if the argument `temp` is specified
-> inappropriately.
->
->
-> > ## Solution to challenge 3
-> >
-> > Extend our previous definition of the function by adding in an explicit call
-> > to `stopifnot()`. Since `fahr_to_celsius()` is a composition of two other
-> > functions, checking inside here makes adding checks to the two component
-> > functions redundant.
-> >
-> >
-> > ```{r}
-> > fahr_to_celsius <- function(temp) {
-> >   stopifnot(is.numeric(temp))
-> >   temp_k <- fahr_to_kelvin(temp)
-> >   result <- kelvin_to_celsius(temp_k)
-> >   return(result)
-> > }
-> > ```
 
 
 ### Testing and Documenting
-
-We have one more task first, though: we should write some [documentation]({{ page.root }}/reference.html#documentation) for our function to remind ourselves later what it's for and how to use it.
-
-A common way to put documentation in software is to add [comments]({{ page.root }}/reference.html#comment) like this:
-
-```{r}
-center <- function(data, midpoint) {
-  # return a new vector containing the original data centered around the
-  # midpoint.
-  # Example: center(c(1, 2, 3), 0) => c(-1, 0, 1)
-  new_data <- (data - mean(data)) + midpoint
-  return(new_data)
-}
-```
-
 
 > ## Tip: Testing and documenting
 >
@@ -346,30 +298,6 @@ center <- function(data, midpoint) {
 [testthat]: http://r-pkgs.had.co.nz/tests.html
 
 
-> ## Tip: Pass by value
->
-> Functions in R almost always make copies of the data to operate on
-> inside of a function body. When we modify `dat` inside the function
-> we are modifying the copy of the mtcars dataset stored in `dat`,
-> not the original variable we gave as the first argument.
->
-> This is called "pass-by-value" and it makes writing code much safer:
-> you can always be sure that whatever changes you make within the
-> body of the function, stay inside the body of the function.
-
-
-> ## Tip: Function scope
->
-> Another important concept is scoping: any variables (or functions!) you
-> create or modify inside the body of a function only exist for the lifetime
-> of the function's execution. When we call `center()`, the variable `dat` only exists inside the body of the function. Even if we
-> have variables of the same name in our interactive R session, they are
-> not modified in any way when executing a function.
-
-
-
-
-
 
 
 
@@ -378,7 +306,7 @@ center <- function(data, midpoint) {
 > ## Tip
 >
 > R has some unique aspects that can be exploited when performing more
-> complicated operations. We will not be writing anything that requires
+> complicated operations. We have not written anything that requires
 > knowledge of these more advanced concepts. In the future when you are
 > comfortable writing functions in R, you can learn more by reading the
 > [R Language Manual][man] or this [chapter][] from
