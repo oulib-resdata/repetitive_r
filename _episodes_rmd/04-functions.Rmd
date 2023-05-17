@@ -21,7 +21,7 @@ knitr::opts_chunk$set(error = TRUE)
 ```
 
 If we only had one data set to analyze, it would probably be faster to load the
-file into a spreadsheet and use that to plot simple statistics. However, the
+file into a spreadsheet and use that to plot simple statistics. However, 
 our data may be updated periodically, and we may want to pull in that new
 information later and re-run our analysis again. We may also obtain similar data
 from a different source in the future.
@@ -45,44 +45,55 @@ several operations with a single command.
 
 ## Defining a function
 
-Let's open a new R script file in the `functions/` directory and call it
+Let's open a new R script file in a `functions/` directory within our working directory.  We will name the script
 functions-lesson.R.
 
-Let's define a function `conversion()` that converts values into a new value 2.14 times the original value.
+Within that functions file, let's define a function `conversion()` that converts values into a new value 2.14 times the original value.
 
 ```{r}
 conversion <- function(value) {
-  converted <- value*2.14
+  dat <- value
+  converted <- dat*2.14
   return(converted)
 }
 ```
 
 We define `conversion()` by assigning it to the output of `function`. The
 list of argument names are contained within parentheses.   Next, the
-[body]({{ page.root }}/reference/#function-body) of the function--the
+body of the function--the
 statements that are executed when it runs--is contained within curly braces
 (`{}`). The statements in the body are indented by two spaces. This makes the
 code easier to read but does not affect how the code operates.
 
-It is useful to think of creating functions like writing a cookbook. First you define the "ingredients" that your function needs. In this case, we only need one ingredient to use our function: "temp". After we list our ingredients, we then say what we will do with them, in this case, we are taking our ingredient and applying a set of mathematical operators to it. 
+It is useful to think of creating functions like writing a cookbook. First you define the "ingredients" that your function needs (these are the arguments). In this case, we only need one ingredient to use our function: "value". After we list our ingredients, we then say what we will do with them. In this case, we are taking our ingredient and applying a mathematical operators to it (multiplication). 
+
+> ## Tip: Pass by value
+>
+> Functions in R almost always make copies of the data to operate on
+> inside of a function body. When we modify `dat` inside the function
+> we are modifying the copy of the mtcars dataset stored in `dat`,
+> not the original variable we gave as the first argument.
+>
+> This is called "pass-by-value" and it makes writing code much safer:
+> you can always be sure that whatever changes you make within the
+> body of the function, stay inside the body of the function.
+
 
 When we call the function, the values we pass to it as arguments are assigned to
 those variables so that we can use them inside the function. Inside the
-function, we use a [return
-statement]({{ page.root }}/reference/#return-statement) to send a result back to
-whoever asked for it.
+function, we use a return statement to send a result back to us.
 
 > ## Tip
 >
 > One feature unique to R is that the return statement is not required.
 > R automatically returns whichever variable is on the last line of the body
-> of the function. But for clarity, we will explicitly define the
+> of the function. But for clarity (and more complex returns), we will explicitly define the
 > return statement.
 
 ## Loading functions from a separate file for cleaner code
 
-You don't have to, but we're going to write our functions into a separate R script. You can load in the functions into our R session by using the
-`source()` function:
+As we mentioned before, we're going to write our functions into a separate R script. You can load in the functions into our R session by using the
+`source()` function.  You can write functions directly into your original script file, but keeping functions cleanly separate is a good habit for reproducibility and ease of reading the code.
 
 ```{r, eval=FALSE}
 source("functions/functions-lesson.R")
@@ -109,15 +120,19 @@ conversion(1)
 > >
 > > ```{r}
 > > conversion_grams_to_kg <- function(value) {
-> >  kg <- value/1000
+> >  dat <- value
+> >  kg <- dat/1000
 > >  return(kg)
 > > }
+> > 
+> > conversion_grams_to_kg(1000)
 > > ```
 
 You can add more than one argument (or "ingredient") to the function.  In this case, let's make the conversion factor into an argument we can specify.
 ```{r}
 conversion <- function(value, conversion_factor) {
-  converted <- value*conversion_factor
+  dat <- value
+  converted <- dat*conversion_factor
   return(converted)
 }
 ```
@@ -129,23 +144,13 @@ conversion(value = 1, conversion_factor = 2.14)
 conversion(value = 1000, conversion_factor = 0.0001)
 ```
 
-> ## Tip: Pass by value
->
-> Functions in R almost always make copies of the data to operate on
-> inside of a function body. When we modify `dat` inside the function
-> we are modifying the copy of the mtcars dataset stored in `dat`,
-> not the original variable we gave as the first argument.
->
-> This is called "pass-by-value" and it makes writing code much safer:
-> you can always be sure that whatever changes you make within the
-> body of the function, stay inside the body of the function.
 
 
 > ## Tip: Function scope
 >
 > Another important concept is scoping: any variables (or functions!) you
 > create or modify inside the body of a function only exist for the lifetime
-> of the function's execution. When we call `center()`, the variable `dat` only exists inside the body of the function. Even if we
+> of the function's execution. When we call `conversion()`, the variable `converted` only exists inside the body of the function. Even if we
 > have variables of the same name in our interactive R session, they are
 > not modified in any way when executing a function.
 
@@ -180,7 +185,8 @@ To understand what's going on, and make our own functions easier to use, let's r
 
 ```{r}
 conversion <- function(value, conversion_factor=2.14) {
-  converted <- value*conversion_factor
+  dat <- value
+  converted <- dat*conversion_factor
   return(converted)
 }
 ```
@@ -221,7 +227,8 @@ values. It was defined like so:
 
 ```{r}
 conversion <- function(value, conversion_factor) {
-  converted <- value*conversion_factor
+  dat <- value
+  converted <- dat*conversion_factor
   return(converted)
 }
 ```
@@ -243,7 +250,8 @@ so:
 ```{r}
 conversion <- function(value, conversion_factor) {
   stopifnot(as.numeric(value))
-  converted <- value*conversion_factor
+  dat <- value
+  converted <- dat*conversion_factor
   return(converted)
 }
 ```
