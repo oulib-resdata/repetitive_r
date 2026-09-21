@@ -25,7 +25,7 @@ Vectorization (lapply and friends), loops, and custom functions.
 ## When should you use each case?
 R is vectorized which means most actions can be performed by applying a function to a column by itself with no further work.  lapply() and its related functions (tapply(), sapply()) let you apply functions in groups.
 
-Loops are useful for modifying an object repeatedly in place, recursive functions, and running until a condition is met [while loops](http://adv-r.had.co.nz/Functionals.html#functionals-not)
+Loops are useful for modifying an object repeatedly in place and recursive functions where order matters.
 
 Writing your own function can help with complex loops or be used in lapply().  Loops and vectorized operations are similar at small-moderate sized datasets, but in larger datasets vectorizations should be faster.  Sequences require a loop.  Otherwise, you can use [lapply, tapply, or sapply](https://rpubs.com/markpayne/132503)
 ```{r}
